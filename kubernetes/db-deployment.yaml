@@ -1,0 +1,65 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mariadb
+  labels:
+    db: mariadb
+spec:
+  #replicas: 3
+  selector:
+    matchLabels:
+      db: mariadb
+  template:
+    metadata:
+      labels:
+        db: mariadb
+    spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+                - key: nodetype
+                  operator: In
+                  values:
+                    - database      
+      volumes: 
+        - name: initial-data 
+          configMap: 
+            name: db-config
+        - name: mariadb-persistend-storage 
+          persistentVolumeClaim:
+            claimName: mariadb-pvc  
+      containers:   
+        - name: ecomdb 
+          image: 'mariadb:latest'
+          volumeMounts:
+            - name: initial-data 
+              mountPath: /docker-entrypoint-initdb.d
+            - name: mariadb-persistend-storage
+              mountPath: /var/lib/mysql    
+          env:
+            - name: MARIADB_ROOT_PASSWORD 
+              valueFrom: 
+                secretKeyRef:
+                  name: db-secret
+                  key: rootpassword 
+            - name: MARIADB_DATABASE 
+              valueFrom: 
+                secretKeyRef: 
+                  name: db-secret 
+                  key: dbname  
+            - name: MARIADB_USER 
+              valueFrom: 
+                secretKeyRef: 
+                  name: db-secret 
+                  key: dbuser  
+            - name: MARIADB_PASSWORD 
+              valueFrom: 
+                secretKeyRef: 
+                  name: db-secret 
+                  key: dbpassword 
+
+                 
+        
+

@@ -1,0 +1,37 @@
+/* Set the background color to black and text color to white */
+body {
+    background-color: #1a1a1a;
+    color: #ffffff;
+}
+
+/* Style links */
+a {
+    color: #ffffff;
+}
+
+/* Style headings */
+h1, h2, h3, h4, h5, h6 {
+    color: #ffffff;
+}
+
+/* Style buttons */
+button {
+    background-color: #333333;
+    color: #ffffff;
+}
+
+/* Style input fields and textareas */
+input[type="text"],
+input[type="email"],
+input[type="password"],
+textarea {
+    background-color: #333333;
+    color: #ffffff;
+    border: 1px solid #666666;
+}
+
+/* Style hover effect for buttons and links */
+button:hover,
+a:hover {
+    opacity: 0.7;
+}

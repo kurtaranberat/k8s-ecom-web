@@ -1,0 +1,64 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ecomapp
+  labels:
+    app: ecomapp
+spec:
+  selector: 
+    matchLabels: 
+      app: ecomapp
+  template:
+    metadata:
+      labels:
+        app: ecomapp
+    spec:
+      containers:
+      - image: beratkurtaran/ecom-web:v1
+        name: ecomapp
+        imagePullPolicy: Always
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 80
+          initialDelaySeconds: 5
+          periodSeconds: 3
+          failureThreshold: 5  
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 80
+          initialDelaySeconds: 30
+          periodSeconds: 3  
+        ports:
+        - containerPort: 80
+          name: ecomapp
+        resources:
+          requests:
+            cpu: "250m"
+            memory: "128Mi"
+          limits: 
+           cpu: "250m"
+           memory: "128Mi"    
+        env:
+          - name: FEATURE_DARK_MODE 
+            valueFrom: 
+              configMapKeyRef:
+                name: feature-toggle-config 
+                key: FEATURE_DARK_MODE
+          - name: DB_NAME
+            valueFrom:
+              secretKeyRef:
+                name: db-secret
+                key: dbname
+          - name: DB_USER 
+            valueFrom: 
+              secretKeyRef: 
+                name: db-secret 
+                key: dbuser 
+          - name: DB_PASSWORD 
+            valueFrom:  
+              secretKeyRef: 
+                name: db-secret 
+                key: dbpassword 
+            
